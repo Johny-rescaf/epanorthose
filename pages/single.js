@@ -7,7 +7,7 @@ import { Tree, Drawer, Button, Icon } from "rsuite";
 import Layout from "../components/layout";
 
 export default function Single() {
-  let [showDrawer, setShowDrawer] = useState(true);
+  let [showDrawer, setShowDrawer] = useState(false);
   return (
     <Layout className="container">
       <Head>
@@ -97,7 +97,9 @@ export default function Single() {
                     Tags: <a href="#">#html</a>,<a href="#">#trends</a>
                   </p>
                 </div>
-                <Button color="blue" style={{
+                <Button color="blue" 
+                onClick={() => setShowDrawer(true)}
+                style={{
                     position: "fixed",
                     top: '50%',
                     right: '-38px',

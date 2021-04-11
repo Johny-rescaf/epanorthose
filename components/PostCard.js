@@ -10,7 +10,7 @@ function PostCard() {
             className="px-3"
             style={{ borderBottom: "1px solid #bbb", marginBottom: "1rem" }}
           >
-            <a href="blog-single.html">
+            <a href="/single">
               News Needs to Meet Its Audiences Where They Are
             </a>
           </h2>

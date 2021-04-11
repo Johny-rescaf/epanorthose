@@ -10,9 +10,12 @@ function PostCard() {
             className="px-3"
             style={{ borderBottom: "1px solid #bbb", marginBottom: "1rem" }}
           >
-            <a href="/single">
-              News Needs to Meet Its Audiences Where They Are
-            </a>
+            <Link href="/single">
+              <a>
+                News Needs to Meet Its Audiences Where They Are
+              </a>
+            </Link>
+            
           </h2>
           <p className="mb-3 px-3">
             Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eligendi

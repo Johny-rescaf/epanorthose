@@ -1,209 +1,151 @@
-import Head from 'next/head'
+import React, { useEffect } from "react";
+import { useRouter } from "next/router";
+import Head from "next/head";
+
+import { Tree } from "rsuite";
+
+import Layout from "../components/layout";
+import PostCard from "../components/PostCard";
 
 export default function Home() {
+  const router = useRouter();
+
+  // useEffect(() => {
+  //   if (localStorage.getItem("jtoken") === null) {
+  //     router.push("/login");
+  //   }
+  // })
+
+  let data = [
+    {
+      label: "Science",
+      value: 1,
+      children: [
+        {
+          label: "Chemistry",
+          value: 2,
+        },
+        {
+          label: "Physics",
+          value: 3,
+          children: [
+            {
+              label: "Nuclear mater",
+              value: 36,
+            },
+            {
+              label: "Numerical analysis",
+              value: 37,
+            },
+            {
+              label: "Molecular physics",
+              value: 38,
+            },
+            {
+              label: "Waves",
+              value: 39,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      label: "Engineering",
+      value: 1,
+      children: [
+        {
+          label: "Electronics",
+          value: 2,
+        },
+        {
+          label: "Software engineering",
+          value: 3,
+          children: [
+            {
+              label: "Backend engineering",
+              value: 36,
+            },
+            {
+              label: "Devops engineering",
+              value: 37,
+            },
+            {
+              label: "frontend engineering",
+              value: 38,
+            },
+          ],
+        },
+      ],
+    },
+  ];
+
   return (
-    <div className="container">
+    <Layout className="container">
       <Head>
-        <title>Create Next App</title>
+        <title>Epanorthose</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <main>
-        <h1 className="title">
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
+        <div className="site-section">
+          <div className="container">
+            <div className="row">
+              <div className="col-lg-9">
+                <div className="section-title">
+                  <h2>Recent articles</h2>
+                </div>
 
-        <p className="description">
-          Get started by editing <code>pages/index.js</code>
-        </p>
+                {[1, 2, 3, 4, 5].map((ell) => (
+                  <PostCard />
+                ))}
+              </div>
 
-        <div className="grid">
-          <a href="https://nextjs.org/docs" className="card">
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className="card">
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className="card"
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className="card"
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+              <div className="col-lg-3">
+                <div className="section-title">
+                  <h2>Posts categories</h2>
+                </div>
+                <Tree data={data} defaultExpandAll />
+                {/* 
+                <div className="trend-entry d-flex">
+                  <div className="number align-self-start">01</div>
+                  <div className="trend-contents">
+                    <h2>
+                      <a href="blog-single.html">
+                        News Needs to Meet Its Audiences Where They Are
+                      </a>
+                    </h2>
+                    <div className="post-meta">
+                      <span className="d-block">
+                        <a href="#">Dave Rogers</a> in <a href="#">News</a>
+                      </span>
+                      <span className="date-read">
+                        Jun 14 <span className="mx-1">&bullet;</span> 3 min read
+                        <span className="icon-star2"></span>
+                      </span>
+                    </div>
+                  </div>
+                </div> */}
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-lg-6">
+                <ul className="custom-pagination list-unstyled">
+                  <li>
+                    <a href="#">1</a>
+                  </li>
+                  <li className="active">2</li>
+                  <li>
+                    <a href="#">3</a>
+                  </li>
+                  <li>
+                    <a href="#">4</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
         </div>
       </main>
-
-      <footer>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className="logo" />
-        </a>
-      </footer>
-
-      <style jsx>{`
-        .container {
-          min-height: 100vh;
-          padding: 0 0.5rem;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-        }
-
-        main {
-          padding: 5rem 0;
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-        }
-
-        footer {
-          width: 100%;
-          height: 100px;
-          border-top: 1px solid #eaeaea;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-
-        footer img {
-          margin-left: 0.5rem;
-        }
-
-        footer a {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-
-        a {
-          color: inherit;
-          text-decoration: none;
-        }
-
-        .title a {
-          color: #0070f3;
-          text-decoration: none;
-        }
-
-        .title a:hover,
-        .title a:focus,
-        .title a:active {
-          text-decoration: underline;
-        }
-
-        .title {
-          margin: 0;
-          line-height: 1.15;
-          font-size: 4rem;
-        }
-
-        .title,
-        .description {
-          text-align: center;
-        }
-
-        .description {
-          line-height: 1.5;
-          font-size: 1.5rem;
-        }
-
-        code {
-          background: #fafafa;
-          border-radius: 5px;
-          padding: 0.75rem;
-          font-size: 1.1rem;
-          font-family: Menlo, Monaco, Lucida Console, Liberation Mono,
-            DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;
-        }
-
-        .grid {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          flex-wrap: wrap;
-
-          max-width: 800px;
-          margin-top: 3rem;
-        }
-
-        .card {
-          margin: 1rem;
-          flex-basis: 45%;
-          padding: 1.5rem;
-          text-align: left;
-          color: inherit;
-          text-decoration: none;
-          border: 1px solid #eaeaea;
-          border-radius: 10px;
-          transition: color 0.15s ease, border-color 0.15s ease;
-        }
-
-        .card:hover,
-        .card:focus,
-        .card:active {
-          color: #0070f3;
-          border-color: #0070f3;
-        }
-
-        .card h3 {
-          margin: 0 0 1rem 0;
-          font-size: 1.5rem;
-        }
-
-        .card p {
-          margin: 0;
-          font-size: 1.25rem;
-          line-height: 1.5;
-        }
-
-        .logo {
-          height: 1em;
-        }
-
-        @media (max-width: 600px) {
-          .grid {
-            width: 100%;
-            flex-direction: column;
-          }
-        }
-      `}</style>
-
-      <style jsx global>{`
-        html,
-        body {
-          padding: 0;
-          margin: 0;
-          font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
-            Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
-            sans-serif;
-        }
-
-        * {
-          box-sizing: border-box;
-        }
-      `}</style>
-    </div>
-  )
+    </Layout>
+  );
 }

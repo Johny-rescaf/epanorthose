@@ -1,20 +1,34 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
+import Link from "next/link";
 
-import { Tree } from "rsuite";
+import { useQuill } from 'react-quilljs';
+import 'quill/dist/quill.snow.css'; 
+// import { Editor } from "react-draft-wysiwyg";
+// import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+
+import { Tree, Button, ButtonToolbar, Icon, Drawer, Form, FormGroup, FormControl, ControlLabel } from "rsuite";
 
 import Layout from "../components/layout";
 import PostCard from "../components/PostCard";
 
 export default function Home() {
-  const router = useRouter();
+  const [showDrawer, setShowDrawer] = useState(false);
+  const [convertedText, setConvertedText] = useState("Some default content");
 
-  // useEffect(() => {
-  //   if (localStorage.getItem("jtoken") === null) {
-  //     router.push("/login");
-  //   }
-  // })
+  const { quill, quillRef } = useQuill();
+
+  // const router = useRouter();
+
+  useEffect(() => {
+    // if (localStorage.getItem("jtoken") === null) {
+    //   router.push("/login");
+    // }
+    // var quill = new Quill('#editor', {
+    //   theme: 'snow'
+    // });
+  })
 
   let data = [
     {
@@ -51,27 +65,27 @@ export default function Home() {
     },
     {
       label: "Engineering",
-      value: 1,
+      value: 6,
       children: [
         {
           label: "Electronics",
-          value: 2,
+          value: 7,
         },
         {
           label: "Software engineering",
-          value: 3,
+          value: 8,
           children: [
             {
               label: "Backend engineering",
-              value: 36,
+              value: 9,
             },
             {
               label: "Devops engineering",
-              value: 37,
+              value: 10,
             },
             {
               label: "frontend engineering",
-              value: 38,
+              value: 12,
             },
           ],
         },
@@ -91,12 +105,19 @@ export default function Home() {
           <div className="container">
             <div className="row">
               <div className="col-lg-9">
-                <div className="section-title">
+                <div className="section-title" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <h2>Recent articles</h2>
+                  <Link href="/editPost">
+                    <Button color="blue" onClick={() => setShowDrawer(true)}>
+                      <Icon icon="pencil" /> Rediger un post
+                    </Button>
+                  </Link>
+                  
                 </div>
+                
 
                 {[1, 2, 3, 4, 5].map((ell) => (
-                  <PostCard />
+                  <PostCard key={ell} />
                 ))}
               </div>
 
@@ -105,26 +126,6 @@ export default function Home() {
                   <h2>Posts categories</h2>
                 </div>
                 <Tree data={data} defaultExpandAll />
-                {/* 
-                <div className="trend-entry d-flex">
-                  <div className="number align-self-start">01</div>
-                  <div className="trend-contents">
-                    <h2>
-                      <a href="blog-single.html">
-                        News Needs to Meet Its Audiences Where They Are
-                      </a>
-                    </h2>
-                    <div className="post-meta">
-                      <span className="d-block">
-                        <a href="#">Dave Rogers</a> in <a href="#">News</a>
-                      </span>
-                      <span className="date-read">
-                        Jun 14 <span className="mx-1">&bullet;</span> 3 min read
-                        <span className="icon-star2"></span>
-                      </span>
-                    </div>
-                  </div>
-                </div> */}
               </div>
             </div>
             <div className="row">

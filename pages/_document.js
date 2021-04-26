@@ -21,6 +21,7 @@ class MyDocument extends Document {
           <link rel="stylesheet" href="css/bootstrap-datepicker.css" />
           <link rel="stylesheet" href="fonts/flaticon/font/flaticon.css" />
           <link rel="stylesheet" href="css/aos.css" />
+          <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet"></link>
           <link rel="stylesheet" href="css/style.css" />
         </Head>
         <body data-spy="scroll" data-target=".site-navbar-target" data-offset="300">
@@ -40,7 +41,9 @@ class MyDocument extends Document {
           <script src="js/aos.js"></script>
           <script src="js/jquery.fancybox.min.js"></script>
           <script src="js/jquery.sticky.js"></script>
+          <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
           <script src="js/main.js"></script>
+
         </body>
       </Html>
     );

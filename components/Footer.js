@@ -8,7 +8,7 @@ function Footer() {
               <div className="copyright">
                 <p>
                   Copyright &copy;
-                  <script>document.write(new Date().getFullYear());</script>
+                  {new Date().getFullYear()}
                   All rights reserved | Epanorthose
                 </p>
               </div>

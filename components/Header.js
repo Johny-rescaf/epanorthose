@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Navbar, Nav, Dropdown, Icon, InputGroup, Input } from "rsuite";
+import { Navbar, Nav, Dropdown, Icon, InputGroup, Input, Avatar } from "rsuite";
 
 const CustomInput = ({ ...props }) => <Input {...props} />;
 
@@ -55,6 +55,25 @@ function Header() {
               <Dropdown.Item eventKey="4">Francais</Dropdown.Item>
               <Dropdown.Item eventKey="5">English</Dropdown.Item>
             </Dropdown>
+
+            <Dropdown
+              title="Account"
+              placement="bottomEnd"
+              renderTitle={children => {
+                return <Avatar size="sm" style={{marginTop: '.9rem', marginRight: '.9rem', marginLeft: '.9rem'}} circle>JK</Avatar>;
+              }}
+            >
+              <Link href="/account">
+                <Dropdown.Item>
+                    <><Icon icon="user" /> Account</>
+                </Dropdown.Item>
+              </Link>
+
+              <Dropdown.Item>
+                <Icon icon="sign-out" /> Logout
+              </Dropdown.Item>
+            </Dropdown>
+
           </Nav>
         </Navbar.Body>
       </Navbar>

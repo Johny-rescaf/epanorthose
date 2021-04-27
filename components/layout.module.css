@@ -1,3 +1,11 @@
 .site-section{
     padding: 3rem 0;
 }
+
+.rs-picker-toggle span{
+    color: #fff !important
+  }
+
+  .rs-picker-has-value .rs-btn .rs-picker-toggle-value, .rs-picker-has-value .rs-picker-toggle .rs-picker-toggle-value {
+    color: #fff;
+}

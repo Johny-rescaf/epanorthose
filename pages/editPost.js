@@ -142,14 +142,14 @@ export default function EditPost() {
                 </Form>
 
                 <ControlLabel className="mb-3">Article Content</ControlLabel>
-                <div style={{ width: '100%', height: 400 }}>
+                <div style={{ width: '100%', height: 400 }} className="mb-3">
                   <div ref={quillRef} />
                 </div>
 
                 <ControlLabel className="mt-5">Sources &amp; bibliographie</ControlLabel>
                 <Input componentClass="textarea" rows={3} placeholder="Textarea" />
 
-                <ControlLabel className="mt-5">Article Copywrite</ControlLabel>
+                <ControlLabel className="my-3">Article Copywrite</ControlLabel>
                 <div>
                   <SelectPicker data={data} block />
                 </div>

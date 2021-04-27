@@ -1,4 +1,4 @@
-import styles from "./layout.module.css";
+import "./layout.module.css";
 import Header from "./Header";
 import Footer from "./Footer";
 import PreLoader from "./PreLoader";

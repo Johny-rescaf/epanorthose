@@ -138,9 +138,6 @@ function Header() {
           </Nav>
         </Navbar.Body>
       </Navbar>
-      <style jsx>{`
-        
-      `}</style>
     </>
   );
 }

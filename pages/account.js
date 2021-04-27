@@ -5,7 +5,7 @@ import Link from "next/link";
 
 import { useQuill } from 'react-quilljs';
 import 'quill/dist/quill.snow.css';
-import { Button, ButtonToolbar, Icon, Drawer, Form, FormGroup, FormControl, ControlLabel, Input, TagPicker, Nav } from "rsuite";
+import { Button, ButtonToolbar, Icon, Drawer, Form, FormGroup, FormControl, ControlLabel, Input, TagPicker, Nav, Avatar } from "rsuite";
 
 import Layout from "../components/layout";
 
@@ -86,6 +86,7 @@ export default function EditPost() {
                 <div className="">
                   <h3>Profile</h3>
                   <Form className="mt-3" onSubmit={registerUser} fluid>
+                  <Avatar style={{marginBottom: '.9rem', width: '100px', height: '100px'}} circle>JK</Avatar>
                     <FormGroup>
                       <ControlLabel className="mb-3">First name *</ControlLabel>
                       <FormControl name="firstname" type="text" />

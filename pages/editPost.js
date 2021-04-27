@@ -5,7 +5,7 @@ import Link from "next/link";
 
 import { useQuill } from 'react-quilljs';
 import 'quill/dist/quill.snow.css';
-import { Button, ButtonToolbar, Icon, Drawer, Form, FormGroup, FormControl, ControlLabel, Input, TagPicker } from "rsuite";
+import { Button, ButtonToolbar, Icon, Drawer, Form, FormGroup, FormControl, ControlLabel, Input, TagPicker, SelectPicker } from "rsuite";
 
 import Layout from "../components/layout";
 
@@ -111,7 +111,7 @@ export default function EditPost() {
             <div className="row">
               <div className="col-lg-10 offset-md-1">
                 <div className="section-title" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <h2>Add / Edit article</h2>
+                  <h2>Add article</h2>
                   {/* <Button color="blue" onClick={() => setShowDrawer(true)}>
                     <Icon icon="save" /> Save changes
                   </Button> */}
@@ -146,6 +146,13 @@ export default function EditPost() {
                   <div ref={quillRef} />
                 </div>
 
+                <ControlLabel className="mt-5">Sources &amp; bibliographie</ControlLabel>
+                <Input componentClass="textarea" rows={3} placeholder="Textarea" />
+
+                <ControlLabel className="mt-5">Article Copywrite</ControlLabel>
+                <div>
+                  <SelectPicker data={data} block />
+                </div>
 
               </div>
             </div>

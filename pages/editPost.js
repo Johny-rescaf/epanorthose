@@ -10,82 +10,41 @@ import { Button, ButtonToolbar, Icon, Drawer, Form, FormGroup, FormControl, Cont
 import Layout from "../components/layout";
 
 
-let data = [
+let copyRightsData = [
   {
-    "label": "Eugenia",
-    "value": "Eugenia",
+    "label": "License1",
+    "value": "1",
     "role": "Master"
   },
   {
-    "label": "Kariane",
-    "value": "Kariane",
+    "label": "License2 ",
+    "value": "2",
     "role": "Master"
   },
   {
-    "label": "Louisa",
-    "value": "Louisa",
+    "label": "License3",
+    "value": "3",
     "role": "Master"
   },
   {
-    "label": "Marty",
-    "value": "Marty",
+    "label": "License4",
+    "value": "4",
     "role": "Master"
   },
   {
-    "label": "Kenya",
-    "value": "Kenya",
+    "label": "License5",
+    "value": "5",
     "role": "Master"
   },
-  {
-    "label": "Hal",
-    "value": "Hal",
-    "role": "Developer"
-  },
-  {
-    "label": "Julius",
-    "value": "Julius",
-    "role": "Developer"
-  },
-  {
-    "label": "Travon",
-    "value": "Travon",
-    "role": "Developer"
-  },
-  {
-    "label": "Vincenza",
-    "value": "Vincenza",
-    "role": "Developer"
-  },
-  {
-    "label": "Dominic",
-    "value": "Dominic",
-    "role": "Developer"
-  },
-  {
-    "label": "Pearlie",
-    "value": "Pearlie",
-    "role": "Guest"
-  },
-  {
-    "label": "Tyrel",
-    "value": "Tyrel",
-    "role": "Guest"
-  },
-  {
-    "label": "Jaylen",
-    "value": "Jaylen",
-    "role": "Guest"
-  },
-  {
-    "label": "Rogelio",
-    "value": "Rogelio",
-    "role": "Guest"
-  }
-]
+];
 
 export default function EditPost() {
-  const [showDrawer, setShowDrawer] = useState(false);
-  const [convertedText, setConvertedText] = useState("Some default content");
+  const [title, setTitle] = useState("Your article title here...");
+  const [content, setContent] = useState("Write your article here...");
+  const [tags, setTags] = useState("");
+  const [summary, setSummary] = useState("Your article summery here...");
+  const [sources, setSources] = useState("Your article sources here...");
+  const [copyWrite, setCopyWrite] = useState(null);
 
   const { quill, quillRef } = useQuill();
 
@@ -93,10 +52,19 @@ export default function EditPost() {
     if (quill) {
       quill.on('text-change', () => {
         const text = quill.root.innerHTML;
-        console.log(text);
+        // console.log(text);
+        setContent(text)
       });
     }
   }, [quill]);
+
+  const saveData = async () => {
+    console.log(title);
+    console.log(content);
+    console.log(summary);
+    console.log(sources);
+    console.log(copyWrite);
+  }
 
   return (
     <Layout className="container">
@@ -112,32 +80,42 @@ export default function EditPost() {
               <div className="col-lg-10 offset-md-1">
                 <div className="section-title" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <h2>Add article</h2>
-                  {/* <Button color="blue" onClick={() => setShowDrawer(true)}>
-                    <Icon icon="save" /> Save changes
-                  </Button> */}
-
+                  
                   <ButtonToolbar>
-                    <Button appearance="primary"><Icon icon="save" /> Save changes</Button>
-                    {/* <Link href="/signup">
-                      <a>Save changes</a>
-                    </Link> */}
+                    <Button 
+                      appearance="primary"
+                      onClick={() => saveData() } >
+                        <Icon icon="save" /> Save changes
+                    </Button>
                   </ButtonToolbar>
                 </div>
 
                 <Form className="my-3" fluid>
                   <FormGroup>
                     <ControlLabel className="mb-3">Article title</ControlLabel>
-                    <FormControl name="text" type="text" placeHolder="Article title..." style={{ height: '45px' }} />
+                    <FormControl 
+                    name="text" 
+                    type="text" 
+                    placeHolder="Article title..." 
+                    style={{ height: '45px' }} 
+                    value={title}
+                    onChange={(value) => setTitle(value)} />
                   </FormGroup>
-                  
+{/*                   
                   <div className="mb-3"> 
                     <ControlLabel className="mb-3">Article tags</ControlLabel>
-                    <TagPicker creatable data={data} style={{ width: '100%' }} menuStyle={{width: 300}} />
-                  </div>
+                    <TagPicker creatable  style={{ width: '100%' }} menuStyle={{width: 300}} />
+                  </div> */}
 
                   <FormGroup>
                     <ControlLabel className="mb-3">Article summary</ControlLabel>
-                    <Input componentClass="textarea" rows={3} placeholder="Textarea" />
+                    <Input 
+                    componentClass="textarea" 
+                    rows={3} 
+                    placeholder="Textarea"
+                    value={summary}
+                    onChange={(value) => setSummary(value)}
+                     />
                   </FormGroup>
                 </Form>
 
@@ -147,11 +125,20 @@ export default function EditPost() {
                 </div>
 
                 <ControlLabel className="mt-5">Sources &amp; bibliographie</ControlLabel>
-                <Input componentClass="textarea" rows={3} placeholder="Textarea" />
+                <Input 
+                componentClass="textarea" 
+                rows={3} 
+                placeholder="Textarea"
+                value={sources}
+                onChange={(value) => setSources(value)}
+                />
 
                 <ControlLabel className="my-3">Article Copywrite</ControlLabel>
                 <div>
-                  <SelectPicker data={data} block />
+                  <SelectPicker 
+                  data={copyRightsData}
+                  onChange={(value) => setCopyWrite(value)}
+                  block />
                 </div>
 
               </div>

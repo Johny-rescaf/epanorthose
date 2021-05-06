@@ -57,7 +57,7 @@ function Header() {
   };
   return (
     <>
-      <Navbar appearance="inverse" style={{}}>
+      <Navbar appearance="inverse" style={{}} className="header-nav">
         <Navbar.Header>
           <Link href="/">
             <a className="navbar-brand logo site-logo px-3">

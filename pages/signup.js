@@ -4,12 +4,42 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import Head from "next/head";
 
-import { Form, FormGroup, FormControl, ControlLabel, HelpBlock, ButtonToolbar, Button } from "rsuite";
+import { Form, FormGroup, FormControl, ControlLabel, ErrorMessage, ButtonToolbar, Button, DatePicker, SelectPicker, Alert } from "rsuite";
 
 import AuthLayout from "../components/AuthLayout";
 
+const sexData = [
+  {
+    "label": "Male",
+    "value": "1",
+    "role": "Master"
+  },
+  {
+    "label": "Female ",
+    "value": "2",
+    "role": "Master"
+  }
+]
+
 export default function SignUp() {
   const [signupState, setSignupState] = useState(0);
+  const [firstname, setFirstname] = useState("");
+  const [lastname, setLastname] = useState("");
+  const [email, setEmail] = useState("");
+  const [birthDate, setBirthDate] = useState("");
+  const [sex, setSex] = useState("");
+  const [plan, setPlan] = useState(0);
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  // Error states
+  const [firstnameError, setFirstnameError] = useState("");
+  const [lastnameError, setLastnameError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [birthDateError, setBirthDateError] = useState("");
+  const [sexError, setSexError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [confirmPasswordError, setConfirmPasswordError] = useState("");
 
   const router = useRouter();
 
@@ -20,15 +50,17 @@ export default function SignUp() {
   });
 
   const registerUser = async (event) => {
-    event.preventDefault();
     try {
-      const res = await fetch("http://localhost:3001/signup", {
+      const res = await fetch("http://localhost:3001/api/signup", {
         body: JSON.stringify({
-          firstname: event.target.firstname.value,
-          lastname: event.target.lastname.value,
-          email: event.target.email.value,
-          password: event.target.password.value,
-          plan: event.target.plan.value,
+          firstname,
+          lastname,
+          email,
+          birthDate,
+          sex,
+          plan,
+          password,
+          confirmPassword
         }),
         headers: {
           "Content-Type": "application/json",
@@ -38,22 +70,24 @@ export default function SignUp() {
 
       const result = await res.json();
       if (result.status == true) {
-        setSignupState(1);
+        Alert.success("Your account has been created successfully !", 4500)
         setTimeout(() => {
           setSignupState(0);
           router.push("/login");
         }, 5000);
       } else {
-        setSignupState(-1);
-        setTimeout(() => {
-          setSignupState(0);
-        }, 5000);
+        if (result.code == "ACCOUNT_NOT_CREATED") {
+          Alert.error("Sorry, Your account could not be created !", 4500)
+        } else if (result.code == "EMAIL_EXISTS") {
+          Alert.warning("Sorry, This email already exists !", 4500)
+        } else if (result.code == "INVALID_FORM") {
+          Alert.warning("Error, The submitted form is invalid !", 4500)
+        } else {
+          Alert.error("Sorry, An error occured !", 4500)
+        }
       }
     } catch (err) {
-      setSignupState(-1);
-      setTimeout(() => {
-        setSignupState(0);
-      }, 5000);
+      Alert.error("Sorry, An error occured !", 4500)
     }
   };
 
@@ -64,38 +98,92 @@ export default function SignUp() {
       </Head>
       <main className="pb-4">
         <h1>Register</h1>
-        <Form className="mt-3" onSubmit={registerUser} fluid>
-        <FormGroup>
+        <Form className="mt-3" fluid>
+          <FormGroup className="mb-3">
             <ControlLabel className="mb-3">First name *</ControlLabel>
-            <FormControl name="firstname" type="text" />
+            <FormControl
+              errorMessage={firstnameError}
+              placement="bottomStart"
+              name="firstname"
+              value={firstname}
+              onChange={(value) => setFirstname(value)}
+              type="text" />
           </FormGroup>
-          <FormGroup>
+          <FormGroup className="mb-3">
             <ControlLabel className="mb-3">Last name *</ControlLabel>
-            <FormControl name="lastname" type="text" />
+            <FormControl
+              errorMessage={lastnameError}
+              placement="bottomStart"
+              name="lastname"
+              onChange={(value) => setLastname(value)}
+              value={lastname}
+              type="text" />
           </FormGroup>
-          <FormGroup>
+          <FormGroup className="mb-3">
             <ControlLabel className="mb-3">Email *</ControlLabel>
-            <FormControl name="email" type="email" />
+            <FormControl
+              errorMessage={emailError}
+              placement="bottomStart"
+              name="email"
+              onChange={(value) => setEmail(value)}
+              value={email}
+              type="email" />
           </FormGroup>
-          <div className="row">
+          <FormGroup className="mb-3">
+            <ControlLabel className="mb-3">Birth date *</ControlLabel>
+            <DatePicker 
+              onChange={(value) => setBirthDate(value)}
+              oneTap 
+              block />
+            <ErrorMessage 
+              show={birthDateError ? true : false} 
+              placement="bottomStart" 
+              className="text-danger">
+              {birthDateError}
+            </ErrorMessage>
+          </FormGroup>
+          <FormGroup className="mb-3">
+            <ControlLabel className="mb-3">Gender *</ControlLabel>
+            <SelectPicker
+              data={sexData}
+              onChange={(value) => setSex(value)}
+              value={sex}
+              block />
+            <ErrorMessage show={sexError ? true : false} placement="bottomStart" className="text-danger">
+              The gender field is required
+            </ErrorMessage>
+          </FormGroup>
+          <div className="row mb-5">
             <div className="col-md-6">
-            <div className="form-check-inline">
-              <input type="radio" className="form-check-input" name="plan" id="plan2" value="2" />
-              <label className="form-check-label" htmlFor="plan2">
-                <strong>Premium (19$/m)</strong>
-                <p>
+              <div className="signup-plan-block form-check-inline shadow p-4 rounded">
+                <input
+                  type="radio"
+                  className="form-check-input"
+                  name="plan"
+                  id="plan1"
+                  value="1"
+                  onChange={() => setPlan(1)}
+                  checked={plan == 1 ? true : false} />
+                <label className="form-check-label" htmlFor="plan1">
+                  <strong>Premium (19$/m)</strong>
                   <ul>
                     <li>30 articles</li>
                     <li>Post articles</li>
                   </ul>
-                </p>
-              </label>
-            </div>
+                </label>
+              </div>
             </div>
             <div className="col-md-6">
-              <div className="form-check-inline">
-                <input type="radio" className="form-check-input" name="plan" id="plan1" checked value="1" />
-                <label className="form-check-label" htmlFor="plan1">
+              <div className="signup-plan-block form-check-inline shadow p-4 rounded">
+                <input
+                  type="radio"
+                  className="form-check-input"
+                  name="plan"
+                  id="plan2"
+                  value="2"
+                  onChange={() => setPlan(2)}
+                  checked={plan == 2 ? true : false} />
+                <label className="form-check-label" htmlFor="plan2">
                   <strong>Basic (10$/m)</strong>
                   <p>
                     <ul>
@@ -109,179 +197,35 @@ export default function SignUp() {
               </div>
             </div>
           </div>
-          <FormGroup>
+          <FormGroup className="mb-3">
             <ControlLabel className="mb-3">Password *</ControlLabel>
-            <FormControl name="password" type="password" />
+            <FormControl
+              errorMessage={passwordError}
+              placement="bottomStart"
+              name="password"
+              onChange={(value) => setPassword(value)}
+              value={password}
+              type="password" />
           </FormGroup>
-          <FormGroup>
+          <FormGroup className="mb-5">
             <ControlLabel className="mb-3">Confirm password *</ControlLabel>
-            <FormControl name="cpassword" type="password" />
+            <FormControl
+              errorMessage={confirmPasswordError}
+              placement="bottomStart"
+              name="cpassword"
+              onChange={(value) => setConfirmPassword(value)}
+              value={confirmPassword}
+              type="password" />
           </FormGroup>
-          <FormGroup>
+          <FormGroup className="mt-3">
             <ButtonToolbar>
-              <Button appearance="primary">Submit</Button>
+              <Button appearance="primary" onClick={registerUser} >Submit</Button>
               <Link href="/login">
                 <a>Have an account ?</a>
               </Link>
             </ButtonToolbar>
           </FormGroup>
         </Form>
-{/*         
-        <form onSubmit={registerUser}>
-          <span className="input input--hoshi">
-            <input
-              className="input__field input__field--hoshi"
-              type="text"
-              id="firstname"
-              name="firstname"
-            />
-            <label
-              className="input__label input__label--hoshi input__label--hoshi-color-3"
-              htmlFor="firstname"
-            >
-              <span className="input__label-content input__label-content--hoshi">
-                First name
-              </span>
-            </label>
-          </span>
-          <span className="input input--hoshi">
-            <input
-              className="input__field input__field--hoshi"
-              type="text"
-              id="lastname"
-              name="lastname"
-            />
-            <label
-              className="input__label input__label--hoshi input__label--hoshi-color-3"
-              htmlFor="lastname"
-            >
-              <span className="input__label-content input__label-content--hoshi">
-                Last name
-              </span>
-            </label>
-          </span>
-          <span className="input input--hoshi">
-            <input
-              className="input__field input__field--hoshi"
-              type="text"
-              id="email"
-              name="email"
-            />
-            <label
-              className="input__label input__label--hoshi input__label--hoshi-color-3"
-              htmlFor="email"
-            >
-              <span className="input__label-content input__label-content--hoshi">
-                E-mail
-              </span>
-            </label>
-          </span>
-          <div className="plan-container">
-            <div className="form-check-inline plan-select">
-              <input
-                type="radio"
-                className="form-check-input"
-                name="plan"
-                id="plan1"
-                checked
-                value="1"
-              />
-              <label className="form-check-label" htmlFor="plan1">
-                <strong>Basic (10$/m)</strong>
-                <p>
-                  <ul>
-                    <li>10 articles</li>
-                    <li>
-                      <i className="text-danger">X</i> Post articles
-                    </li>
-                  </ul>
-                </p>
-              </label>
-            </div>
-            <div className="form-check-inline plan-select">
-              <input
-                type="radio"
-                className="form-check-input"
-                name="plan"
-                id="plan2"
-                value="2"
-              />
-              <label className="form-check-label" htmlFor="plan2">
-                <strong>Premium (19$/m)</strong>
-                <p>
-                  <ul>
-                    <li>30 articles</li>
-                    <li>Post articles</li>
-                  </ul>
-                </p>
-              </label>
-            </div>
-          </div>
-
-          <span className="input input--hoshi">
-            <input
-              className="input__field input__field--hoshi"
-              type="password"
-              id="password"
-              name="password"
-            />
-            <label
-              className="input__label input__label--hoshi input__label--hoshi-color-3"
-              htmlFor="password"
-            >
-              <span className="input__label-content input__label-content--hoshi">
-                Password
-              </span>
-            </label>
-          </span>
-          <span className="input input--hoshi">
-            <input
-              className="input__field input__field--hoshi"
-              type="password"
-              id="password1"
-              name="password1"
-            />
-            <label
-              className="input__label input__label--hoshi input__label--hoshi-color-3"
-              htmlFor="password1"
-            >
-              <span className="input__label-content input__label-content--hoshi">
-                Repeat Passowrd
-              </span>
-            </label>
-          </span>
-          {signupState == 1 ? (
-            <div class="alert alert-success alert-dismissible">
-              <button type="button" class="close" data-dismiss="alert">
-                &times;
-              </button>
-              <strong>Success!</strong> Your account has been created
-              successfully.
-            </div>
-          ) : (
-            ""
-          )}
-          {signupState == -1 ? (
-            <div class="alert alert-danger alert-dismissible">
-              <button type="button" class="close" data-dismiss="alert">
-                &times;
-              </button>
-              <strong>Sorry!</strong> Your account could been created.
-            </div>
-          ) : (
-            ""
-          )}
-          <div className="cta">
-            <button type="submit" className="btn btn-primary pull-left">
-              Sign-Up Now
-            </button>
-            <span>
-              <Link href="/login">
-                <a>Already a member ?</a>
-              </Link>
-            </span>
-          </div>
-        </form> */}
       </main>
     </AuthLayout>
   );

@@ -4,7 +4,7 @@ import Head from "next/head";
 import Link from "next/link";
 
 import { useQuill } from 'react-quilljs';
-import 'quill/dist/quill.snow.css'; 
+import 'quill/dist/quill.snow.css';
 // import { Editor } from "react-draft-wysiwyg";
 // import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
@@ -12,23 +12,22 @@ import { Tree, Button, ButtonToolbar, Icon, Drawer, Form, FormGroup, FormControl
 
 import Layout from "../components/layout";
 import PostCard from "../components/PostCard";
+import { baseUrl } from "../constants/config";
 
 export default function Home() {
   const [showDrawer, setShowDrawer] = useState(false);
   const [convertedText, setConvertedText] = useState("Some default content");
+  const [posts, setPosts] = useState([]);
 
   const { quill, quillRef } = useQuill();
 
-  // const router = useRouter();
-
-  useEffect(() => {
-    // if (localStorage.getItem("jtoken") === null) {
-    //   router.push("/login");
-    // }
-    // var quill = new Quill('#editor', {
-    //   theme: 'snow'
-    // });
-  })
+  useEffect(async () => {
+    const res = await fetch(baseUrl + "api/post");
+    const results = await res.json()
+    if (results.status == true) {
+      setPosts(results.posts);
+    }
+  }, [])
 
   let data = [
     {
@@ -112,15 +111,11 @@ export default function Home() {
                       <Icon icon="pencil" /> Rediger un post
                     </Button>
                   </Link>
-                  
                 </div>
-                
-
-                {[1, 2, 3, 4, 5].map((ell) => (
-                  <PostCard key={ell} />
+                {posts.map((post) => (
+                  <PostCard key={post.id} data={post} />
                 ))}
               </div>
-
               <div className="col-lg-3">
                 <div className="section-title">
                   <h2>Posts categories</h2>

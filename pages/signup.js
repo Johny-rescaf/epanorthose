@@ -7,6 +7,7 @@ import Head from "next/head";
 import { Form, FormGroup, FormControl, ControlLabel, ErrorMessage, ButtonToolbar, Button, DatePicker, SelectPicker, Alert } from "rsuite";
 
 import AuthLayout from "../components/AuthLayout";
+import { baseUrl } from "../constants/config";
 
 const sexData = [
   {
@@ -22,7 +23,7 @@ const sexData = [
 ]
 
 export default function SignUp() {
-  const [signupState, setSignupState] = useState(0);
+  const [loadingState, setLoadingState] = useState(false);
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
   const [email, setEmail] = useState("");
@@ -49,9 +50,10 @@ export default function SignUp() {
     }
   });
 
-  const registerUser = async (event) => {
+  const registerUser = async () => {
     try {
-      const res = await fetch("http://localhost:3001/api/signup", {
+      setLoadingState(true);
+      const res = await fetch(baseUrl + "api/signup", {
         body: JSON.stringify({
           firstname,
           lastname,
@@ -69,10 +71,10 @@ export default function SignUp() {
       });
 
       const result = await res.json();
+      setLoadingState(false);
       if (result.status == true) {
         Alert.success("Your account has been created successfully !", 4500)
         setTimeout(() => {
-          setSignupState(0);
           router.push("/login");
         }, 5000);
       } else {
@@ -87,6 +89,7 @@ export default function SignUp() {
         }
       }
     } catch (err) {
+      setLoadingState(false);
       Alert.error("Sorry, An error occured !", 4500)
     }
   };
@@ -153,7 +156,7 @@ export default function SignUp() {
               The gender field is required
             </ErrorMessage>
           </FormGroup>
-          <div className="row mb-5">
+          <div className="row mb-5 mt-5">
             <div className="col-md-6">
               <div className="signup-plan-block form-check-inline shadow p-4 rounded">
                 <input
@@ -219,7 +222,7 @@ export default function SignUp() {
           </FormGroup>
           <FormGroup className="mt-3">
             <ButtonToolbar>
-              <Button appearance="primary" onClick={registerUser} >Submit</Button>
+              <Button appearance="primary" onClick={registerUser} loading={loadingState}>Submit</Button>
               <Link href="/login">
                 <a>Have an account ?</a>
               </Link>

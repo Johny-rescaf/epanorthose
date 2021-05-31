@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Navbar, Nav, Dropdown, Icon, InputGroup, Input, Avatar, SelectPicker } from "rsuite";
+import { useRouter } from "next/router";
 
 const CustomInput = ({ ...props }) => <Input {...props} />;
 
@@ -52,9 +53,16 @@ const CustomInputGroupWidthButton = ({ placeholder, ...props }) => (
 );
 // boxShadow: '0px 4px 8px #aaa' 
 function Header() {
+  const router = useRouter();
+
   let onSelect = () => {
     console.log("Here");
   };
+
+  function logOut(){
+    localStorage.removeItem('jtoken');
+    router.push('/login')
+  }
   return (
     <>
       <Navbar appearance="inverse" style={{}} className="header-nav">
@@ -130,7 +138,7 @@ function Header() {
                 </Dropdown.Item>
               </Link>
 
-              <Dropdown.Item>
+              <Dropdown.Item onSelect={logOut}>
                 <Icon icon="sign-out" /> Logout
               </Dropdown.Item>
             </Dropdown>

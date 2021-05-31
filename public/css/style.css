@@ -1,5 +1,14 @@
 
 /* Custom styles */
+
+.header-nav .rs-picker-toggle span{
+    color: #fff !important;
+}
+
+.header-nav .rs-picker-toggle.active span, .header-nav .rs-picker-toggle:hover span{
+    color: #1675e0 !important;
+}
+
 .signup-plan-block{
     width: 100%;
 }

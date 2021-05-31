@@ -5,54 +5,67 @@ import Link from "next/link";
 
 import { useQuill } from 'react-quilljs';
 import 'quill/dist/quill.snow.css';
-import { Button, ButtonToolbar, Icon, Drawer, Form, FormGroup, FormControl, ControlLabel, Input, TagPicker, SelectPicker } from "rsuite";
+import { Button, ButtonToolbar, Icon, Drawer, Form, FormGroup, FormControl, ControlLabel, Input, TagPicker, SelectPicker, Alert } from "rsuite";
 
 import Layout from "../components/layout";
+import { baseUrl } from "../constants/config";
 
 
 let copyRightsData = [
   {
     "label": "License1",
-    "value": "1",
+    "value": "License1",
     "role": "Master"
   },
   {
     "label": "License2 ",
-    "value": "2",
+    "value": "License2",
     "role": "Master"
   },
   {
     "label": "License3",
-    "value": "3",
+    "value": "License3",
     "role": "Master"
   },
   {
     "label": "License4",
-    "value": "4",
+    "value": "License4",
     "role": "Master"
   },
   {
     "label": "License5",
-    "value": "5",
+    "value": "License5",
     "role": "Master"
   },
 ];
 
 export default function EditPost() {
-  const [title, setTitle] = useState("Your article title here...");
-  const [content, setContent] = useState("Write your article here...");
-  const [tags, setTags] = useState("");
-  const [summary, setSummary] = useState("Your article summery here...");
-  const [sources, setSources] = useState("Your article sources here...");
-  const [copyWrite, setCopyWrite] = useState(null);
+  const [loadingState, setLoadingState] = useState(false);
+  const [isLogin, setIsLogin] = useState(false);
+
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [tags, setTags] = useState([]);
+  const [summary, setSummary] = useState("");
+  const [sources, setSources] = useState("");
+  const [copyRight, setCopyRight] = useState(null);
 
   const { quill, quillRef } = useQuill();
+  const router = useRouter();
 
   useEffect(() => {
+
+    if (typeof window !== 'undefined') {
+      if (localStorage.getItem("jtoken") == null) {
+        router.push("/login");
+      }else{
+        setIsLogin(true);
+      }
+    }
+
     if (quill) {
       quill.on('text-change', () => {
         const text = quill.root.innerHTML;
-        // console.log(text);
         setContent(text)
       });
     }
@@ -63,16 +76,57 @@ export default function EditPost() {
     console.log(content);
     console.log(summary);
     console.log(sources);
-    console.log(copyWrite);
+    console.log(tags);
+    console.log(copyRight);
+
+    try {
+      setLoadingState(true);
+      var jtoken = JSON.parse(localStorage.getItem("jtoken"));
+      const res = await fetch(baseUrl + "api/post", {
+        body: JSON.stringify({
+          title,
+          content,
+          summary,
+          sources,
+          tags,
+          copyRight,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+          "authorization": `bearer ${jtoken}`
+        },
+        method: "POST",
+      });
+
+      const result = await res.json();
+      setLoadingState(false);
+      if (result.status == true) {
+        Alert.success("Article created successfully and waiting for verification !", 600)
+        setTimeout(() => {
+          router.push("/");
+        }, 5000);
+      } else {
+        if (result.code == "ARTICLE_NOT_CREATED") {
+          Alert.error("Sorry, Your article could not be created !", 4500)
+        } else if (result.code == "INVALID_FORM") {
+          Alert.warning("Error, The submitted form is invalid !", 4500)
+        } else {
+          Alert.error("Sorry, An error occured !", 4500)
+        }
+      }
+    } catch (err) {
+      setLoadingState(false);
+      Alert.error("Sorry, An error occured !", 4500)
+    }
   }
 
+
   return (
-    <Layout className="container">
+    <Layout className="container" style={{display: isLogin ? '' : 'none'}}>
       <Head>
-        <title>Edit / add post</title>
+        <title>Add post</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
       <main>
         <div className="site-section">
           <div className="container">
@@ -80,12 +134,12 @@ export default function EditPost() {
               <div className="col-lg-10 offset-md-1">
                 <div className="section-title" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <h2>Add article</h2>
-                  
                   <ButtonToolbar>
-                    <Button 
+                    <Button
                       appearance="primary"
-                      onClick={() => saveData() } >
-                        <Icon icon="save" /> Save changes
+                      loading={loadingState}
+                      onClick={() => saveData()} >
+                      <Icon icon="save" /> Save changes
                     </Button>
                   </ButtonToolbar>
                 </div>
@@ -93,29 +147,33 @@ export default function EditPost() {
                 <Form className="my-3" fluid>
                   <FormGroup>
                     <ControlLabel className="mb-3">Article title</ControlLabel>
-                    <FormControl 
-                    name="text" 
-                    type="text" 
-                    placeHolder="Article title..." 
-                    style={{ height: '45px' }} 
-                    value={title}
-                    onChange={(value) => setTitle(value)} />
+                    <FormControl
+                      name="text"
+                      type="text"
+                      placeHolder="Your article title here..."
+                      style={{ height: '45px' }}
+                      value={title}
+                      onChange={(value) => setTitle(value)} />
                   </FormGroup>
-{/*                   
-                  <div className="mb-3"> 
+
+                  <div className="mb-3">
                     <ControlLabel className="mb-3">Article tags</ControlLabel>
-                    <TagPicker creatable  style={{ width: '100%' }} menuStyle={{width: 300}} />
-                  </div> */}
+                    <TagPicker
+                      onChange={(value) => setTags(value)}
+                      creatable
+                      style={{ width: '100%' }}
+                      menuStyle={{ width: 300 }} />
+                  </div>
 
                   <FormGroup>
                     <ControlLabel className="mb-3">Article summary</ControlLabel>
-                    <Input 
-                    componentClass="textarea" 
-                    rows={3} 
-                    placeholder="Textarea"
-                    value={summary}
-                    onChange={(value) => setSummary(value)}
-                     />
+                    <Input
+                      componentClass="textarea"
+                      rows={3}
+                      placeholder="Your article summery here..."
+                      maxLength="255"
+                      value={summary}
+                      onChange={(value) => setSummary(value)} />
                   </FormGroup>
                 </Form>
 
@@ -125,20 +183,20 @@ export default function EditPost() {
                 </div>
 
                 <ControlLabel className="mt-5">Sources &amp; bibliographie</ControlLabel>
-                <Input 
-                componentClass="textarea" 
-                rows={3} 
-                placeholder="Textarea"
-                value={sources}
-                onChange={(value) => setSources(value)}
+                <Input
+                  componentClass="textarea"
+                  rows={3}
+                  placeholder="Your article sources here..."
+                  value={sources}
+                  onChange={(value) => setSources(value)}
                 />
 
-                <ControlLabel className="my-3">Article Copywrite</ControlLabel>
+                <ControlLabel className="my-3">Article Copyright</ControlLabel>
                 <div>
-                  <SelectPicker 
-                  data={copyRightsData}
-                  onChange={(value) => setCopyWrite(value)}
-                  block />
+                  <SelectPicker
+                    data={copyRightsData}
+                    onChange={(value) => setCopyRight(value)}
+                    block />
                 </div>
 
               </div>

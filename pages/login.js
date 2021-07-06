@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-import jwt from 'jwt-decode';
-
 import { useRouter } from "next/router";
 import Link from "next/link";
 import Head from "next/head";
@@ -44,25 +42,24 @@ export default function Login() {
       setLoadingState(false);
       if (result.status == true) {
         const jtoken = result.accessToken;
-        // const jtoken = jwt(token);
         localStorage.setItem("jtoken", JSON.stringify(jtoken));
-        router.push("/");
+        router.push("/posts");
       } else {
-        Alert.error("Sorry, Incorrect Login credentials !", 4500)
+        Alert.error("Identifiants de connexion incorrects !", 4500)
       }
     } catch (error) {
       setLoadingState(false);
-      Alert.error("Sorry, An error occured !", 4500)
+      Alert.error("Une erreur s'est produite !", 4500)
     }
   };
 
   return (
     <AuthLayout>
       <Head>
-        <title>Login</title>
+        <title>Se connecter</title>
       </Head>
       <main className=" pb-4">
-        <h1 className="">Login</h1>
+        <h1 className="">Connexion</h1>
         <Form className="mt-3" fluid>
           <FormGroup>
             <ControlLabel className="mb-3">Email</ControlLabel>

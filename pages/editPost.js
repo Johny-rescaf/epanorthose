@@ -3,47 +3,63 @@ import { useRouter } from "next/router";
 import Head from "next/head";
 import Link from "next/link";
 
-import { useQuill } from 'react-quilljs';
-import 'quill/dist/quill.snow.css';
-import { Button, ButtonToolbar, Icon, Drawer, Form, FormGroup, FormControl, ControlLabel, Input, TagPicker, SelectPicker, Alert } from "rsuite";
+import { useQuill } from "react-quilljs";
+import "quill/dist/quill.snow.css";
+import {
+  Button,
+  ButtonToolbar,
+  Icon,
+  Drawer,
+  Form,
+  FormGroup,
+  FormControl,
+  ControlLabel,
+  Input,
+  TagPicker,
+  SelectPicker,
+  Alert,
+  TreePicker,
+} from "rsuite";
 
 import Layout from "../components/layout";
 import { baseUrl } from "../constants/config";
-
+import { fetchCategories } from "../services/categoryService";
 
 let copyRightsData = [
   {
-    "label": "License1",
-    "value": "License1",
-    "role": "Master"
+    label: "License1",
+    value: "License1",
+    role: "Master",
   },
   {
-    "label": "License2 ",
-    "value": "License2",
-    "role": "Master"
+    label: "License2 ",
+    value: "License2",
+    role: "Master",
   },
   {
-    "label": "License3",
-    "value": "License3",
-    "role": "Master"
+    label: "License3",
+    value: "License3",
+    role: "Master",
   },
   {
-    "label": "License4",
-    "value": "License4",
-    "role": "Master"
+    label: "License4",
+    value: "License4",
+    role: "Master",
   },
   {
-    "label": "License5",
-    "value": "License5",
-    "role": "Master"
+    label: "License5",
+    value: "License5",
+    role: "Master",
   },
 ];
 
 export default function EditPost() {
   const [loadingState, setLoadingState] = useState(false);
+  const [categories, setCategories] = useState([]);
   const [isLogin, setIsLogin] = useState(false);
 
   const [title, setTitle] = useState("");
+  const [category, setCategory] = useState();
   const [content, setContent] = useState("");
   const [tags, setTags] = useState([]);
   const [summary, setSummary] = useState("");
@@ -53,76 +69,29 @@ export default function EditPost() {
   const { quill, quillRef } = useQuill();
   const router = useRouter();
 
-  useEffect(() => {
-
-    if (typeof window !== 'undefined') {
+  useEffect(async () => {
+    if (typeof window !== "undefined") {
       if (localStorage.getItem("jtoken") == null) {
         router.push("/login");
-      }else{
+      } else {
         setIsLogin(true);
       }
     }
 
     if (quill) {
-      quill.on('text-change', () => {
+      quill.on("text-change", () => {
         const text = quill.root.innerHTML;
-        setContent(text)
+        setContent(text);
       });
     }
+
+    await fetchCategories().then((newCategories) => {
+      setCategories(newCategories);
+    });
   }, [quill]);
 
-  const saveData = async () => {
-    console.log(title);
-    console.log(content);
-    console.log(summary);
-    console.log(sources);
-    console.log(tags);
-    console.log(copyRight);
-
-    try {
-      setLoadingState(true);
-      var jtoken = JSON.parse(localStorage.getItem("jtoken"));
-      const res = await fetch(baseUrl + "api/post", {
-        body: JSON.stringify({
-          title,
-          content,
-          summary,
-          sources,
-          tags,
-          copyRight,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-          "authorization": `bearer ${jtoken}`
-        },
-        method: "POST",
-      });
-
-      const result = await res.json();
-      setLoadingState(false);
-      if (result.status == true) {
-        Alert.success("Article created successfully and waiting for verification !", 600)
-        setTimeout(() => {
-          router.push("/");
-        }, 5000);
-      } else {
-        if (result.code == "ARTICLE_NOT_CREATED") {
-          Alert.error("Sorry, Your article could not be created !", 4500)
-        } else if (result.code == "INVALID_FORM") {
-          Alert.warning("Error, The submitted form is invalid !", 4500)
-        } else {
-          Alert.error("Sorry, An error occured !", 4500)
-        }
-      }
-    } catch (err) {
-      setLoadingState(false);
-      Alert.error("Sorry, An error occured !", 4500)
-    }
-  }
-
-
   return (
-    <Layout className="container" style={{display: isLogin ? '' : 'none'}}>
+    <Layout className="container" style={{ display: isLogin ? "" : "none" }}>
       <Head>
         <title>Add post</title>
         <link rel="icon" href="/favicon.ico" />
@@ -132,13 +101,21 @@ export default function EditPost() {
           <div className="container">
             <div className="row">
               <div className="col-lg-10 offset-md-1">
-                <div className="section-title" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div
+                  className="section-title"
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
                   <h2>Add article</h2>
                   <ButtonToolbar>
                     <Button
                       appearance="primary"
                       loading={loadingState}
-                      onClick={() => saveData()} >
+                      onClick={() => saveData()}
+                    >
                       <Icon icon="save" /> Save changes
                     </Button>
                   </ButtonToolbar>
@@ -146,43 +123,66 @@ export default function EditPost() {
 
                 <Form className="my-3" fluid>
                   <FormGroup>
-                    <ControlLabel className="mb-3">Article title</ControlLabel>
+                    <ControlLabel className="mb-3">
+                      Le titre de l'article
+                    </ControlLabel>
                     <FormControl
                       name="text"
                       type="text"
                       placeHolder="Your article title here..."
-                      style={{ height: '45px' }}
+                      style={{ height: "45px" }}
                       value={title}
-                      onChange={(value) => setTitle(value)} />
+                      onChange={(value) => setTitle(value)}
+                    />
                   </FormGroup>
 
                   <div className="mb-3">
-                    <ControlLabel className="mb-3">Article tags</ControlLabel>
+                    <ControlLabel className="mb-3">
+                      Catégorie d'articles
+                    </ControlLabel>
+                    <TreePicker
+                      defaultExpandAll
+                      data={categories}
+                      onChange={(value) => setCategory(value)}
+                      style={{ width: "100%" }}
+                    />
+                  </div>
+
+                  <div className="mb-3">
+                    <ControlLabel className="mb-3">
+                      Tags d'articles
+                    </ControlLabel>
                     <TagPicker
                       onChange={(value) => setTags(value)}
                       creatable
-                      style={{ width: '100%' }}
-                      menuStyle={{ width: 300 }} />
+                      style={{ width: "100%" }}
+                      menuStyle={{ width: 300 }}
+                    />
                   </div>
 
                   <FormGroup>
-                    <ControlLabel className="mb-3">Article summary</ControlLabel>
+                    <ControlLabel className="mb-3">
+                      Article summary
+                    </ControlLabel>
                     <Input
                       componentClass="textarea"
                       rows={3}
                       placeholder="Your article summery here..."
                       maxLength="255"
                       value={summary}
-                      onChange={(value) => setSummary(value)} />
+                      onChange={(value) => setSummary(value)}
+                    />
                   </FormGroup>
                 </Form>
 
                 <ControlLabel className="mb-3">Article Content</ControlLabel>
-                <div style={{ width: '100%', height: 400 }} className="mb-3">
+                <div style={{ width: "100%", height: 400 }} className="mb-3">
                   <div ref={quillRef} />
                 </div>
 
-                <ControlLabel className="mt-5">Sources &amp; bibliographie</ControlLabel>
+                <ControlLabel className="mt-5">
+                  Sources &amp; bibliographie
+                </ControlLabel>
                 <Input
                   componentClass="textarea"
                   rows={3}
@@ -196,9 +196,9 @@ export default function EditPost() {
                   <SelectPicker
                     data={copyRightsData}
                     onChange={(value) => setCopyRight(value)}
-                    block />
+                    block
+                  />
                 </div>
-
               </div>
             </div>
           </div>
@@ -206,4 +206,58 @@ export default function EditPost() {
       </main>
     </Layout>
   );
+
+  async function saveData() {
+    console.log(title);
+    console.log(category);
+    console.log(content);
+    console.log(summary);
+    console.log(sources);
+    console.log(tags);
+    console.log(copyRight);
+
+    try {
+      setLoadingState(true);
+      var jtoken = JSON.parse(localStorage.getItem("jtoken"));
+      const res = await fetch(baseUrl + "api/post", {
+        body: JSON.stringify({
+          title,
+          categoryId: category,
+          content,
+          summary,
+          sources,
+          tags,
+          copyRight,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `bearer ${jtoken}`,
+        },
+        method: "POST",
+      });
+
+      const result = await res.json();
+      setLoadingState(false);
+      if (result.status == true) {
+        Alert.success(
+          "Article créé avec succès et en attente de vérification !",
+          4500
+        );
+        setTimeout(() => {
+          router.push("/posts");
+        }, 2000);
+      } else {
+        if (result.code == "ARTICLE_NOT_CREATED") {
+          Alert.error("  !", 4500);
+        } else if (result.code == "INVALID_FORM") {
+          Alert.warning("Le formulaire soumis est invalide !", 4500);
+        } else {
+          Alert.error("Une erreur s'est produite !", 4500);
+        }
+      }
+    } catch (err) {
+      setLoadingState(false);
+      Alert.error("Une erreur s'est produite !", 4500);
+    }
+  }
 }

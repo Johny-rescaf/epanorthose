@@ -1,147 +1,62 @@
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 import Head from "next/head";
 import Link from "next/link";
 
-import { useQuill } from 'react-quilljs';
-import 'quill/dist/quill.snow.css';
-// import { Editor } from "react-draft-wysiwyg";
-// import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-
-import { Tree, Button, ButtonToolbar, Icon, Drawer, Form, FormGroup, FormControl, ControlLabel } from "rsuite";
-
-import Layout from "../components/layout";
-import PostCard from "../components/PostCard";
-import { baseUrl } from "../constants/config";
-
-export default function Home() {
-  const [showDrawer, setShowDrawer] = useState(false);
-  const [convertedText, setConvertedText] = useState("Some default content");
-  const [posts, setPosts] = useState([]);
-
-  const { quill, quillRef } = useQuill();
-
-  useEffect(async () => {
-    const res = await fetch(baseUrl + "api/post");
-    const results = await res.json()
-    if (results.status == true) {
-      setPosts(results.posts);
-    }
-  }, [])
-
-  let data = [
-    {
-      label: "Science",
-      value: 1,
-      children: [
-        {
-          label: "Chemistry",
-          value: 2,
-        },
-        {
-          label: "Physics",
-          value: 3,
-          children: [
-            {
-              label: "Nuclear mater",
-              value: 36,
-            },
-            {
-              label: "Numerical analysis",
-              value: 37,
-            },
-            {
-              label: "Molecular physics",
-              value: 38,
-            },
-            {
-              label: "Waves",
-              value: 39,
-            },
-          ],
-        },
-      ],
-    },
-    {
-      label: "Engineering",
-      value: 6,
-      children: [
-        {
-          label: "Electronics",
-          value: 7,
-        },
-        {
-          label: "Software engineering",
-          value: 8,
-          children: [
-            {
-              label: "Backend engineering",
-              value: 9,
-            },
-            {
-              label: "Devops engineering",
-              value: 10,
-            },
-            {
-              label: "frontend engineering",
-              value: 12,
-            },
-          ],
-        },
-      ],
-    },
-  ];
-
+export default function PostsPage() {
   return (
-    <Layout className="container">
+    <div className="container-fluid">
       <Head>
-        <title>Epanorthose</title>
+        <title>Homepage</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <div className="row">
+        <section className="col-md-12 bg-light px-md-5" style={{ height: '200px' }}>
+          <div>
 
-      <main>
-        <div className="site-section">
-          <div className="container">
-            <div className="row">
-              <div className="col-lg-9">
-                <div className="section-title" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <h2>Recent articles</h2>
-                  <Link href="/editPost">
-                    <Button color="blue" onClick={() => setShowDrawer(true)}>
-                      <Icon icon="pencil" /> Rediger un post
-                    </Button>
-                  </Link>
-                </div>
-                {posts.map((post) => (
-                  <PostCard key={post.id} data={post} />
-                ))}
-              </div>
-              <div className="col-lg-3">
-                <div className="section-title">
-                  <h2>Posts categories</h2>
-                </div>
-                <Tree data={data} defaultExpandAll />
+          </div>
+          <div className="d-flex justify-content-between align-items-center">
+            <div>
+              <button className="btn" style={{ borderRadius: "15px" }}>Contact</button>
+              <button className="btn ml-1" style={{ borderRadius: "15px" }}>Contact</button>
+            </div>
+            <div>
+              <div className="bg-white" style={{ width: '250px', height: '120px' }}>
               </div>
             </div>
-            <div className="row">
-              <div className="col-lg-6">
-                <ul className="custom-pagination list-unstyled">
-                  <li>
-                    <a href="#">1</a>
-                  </li>
-                  <li className="active">2</li>
-                  <li>
-                    <a href="#">3</a>
-                  </li>
-                  <li>
-                    <a href="#">4</a>
-                  </li>
-                </ul>
-              </div>
+            <div>
+              <button className="btn" style={{ borderRadius: "15px" }}>Contact</button>
+              <button className="btn ml-1" style={{ borderRadius: "15px" }}>Contact</button>
             </div>
           </div>
+        </section>
+      </div>
+      <div className="d-flex justify-content-center my-3">
+        <button className="btn btn-info">Recherche</button>
+      </div>
+      <div className="row px-md-5 my-3">
+        <div className="col-md-6">
+          <img className="img-fluid"src="/images/big_img_1.jpg" />
+          <p className="mt-2 pb-0" style={{textAlign: "center", fontSize: "1.1rem"}}>Breack through by xenos frudakis in philadelphia</p>  
         </div>
-      </main>
-    </Layout>
-  );
+        <div className="col-md-6">
+          <div className="" style={{border: "2px solid #333", height: "100%"}}>
+          </div>  
+        </div>
+      </div>
+      <div className="row px-md-5 my-3">
+        <div className="col-md-6">
+          <p className="mt-2 pb-0 py-2" style={{textAlign: "center", fontSize: "1rem"}}>Epanorthose est une <i>Non Profit Association (ASBL du droit belge)</i></p>  
+        </div>
+        <div className="col-md-6">
+          <div className="d-flex justify-content-center">
+            <Link href="/posts">
+              <a className="btn py-3" style={{ borderRadius: "15px" }}>ACCES AU SITE</a>
+            </Link>
+          </div>  
+        </div>
+      </div>
+
+
+    </div>
+  )
 }

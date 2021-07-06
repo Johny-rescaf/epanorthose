@@ -73,34 +73,34 @@ export default function SignUp() {
       const result = await res.json();
       setLoadingState(false);
       if (result.status == true) {
-        Alert.success("Your account has been created successfully !", 4500)
+        Alert.success("Votre compte a été créé avec succès !", 4500)
         setTimeout(() => {
           router.push("/login");
-        }, 5000);
+        }, 1500);
       } else {
         if (result.code == "ACCOUNT_NOT_CREATED") {
-          Alert.error("Sorry, Your account could not be created !", 4500)
+          Alert.error("Votre compte n'a pas pu être créé !", 4500)
         } else if (result.code == "EMAIL_EXISTS") {
-          Alert.warning("Sorry, This email already exists !", 4500)
+          Alert.warning("cette email existe déjà", 4500)
         } else if (result.code == "INVALID_FORM") {
-          Alert.warning("Error, The submitted form is invalid !", 4500)
+          Alert.warning("Le formulaire soumis est invalide !", 4500)
         } else {
-          Alert.error("Sorry, An error occured !", 4500)
+          Alert.error("Une erreur s'est produite !", 4500)
         }
       }
     } catch (err) {
       setLoadingState(false);
-      Alert.error("Sorry, An error occured !", 4500)
+      Alert.error("Une erreur s'est produite !", 4500)
     }
   };
 
   return (
     <AuthLayout>
       <Head>
-        <title>Registration</title>
+        <title>Inscription</title>
       </Head>
       <main className="pb-4">
-        <h1>Register</h1>
+        <h1>Inscription</h1>
         <Form className="mt-3" fluid>
           <FormGroup className="mb-3">
             <ControlLabel className="mb-3">First name *</ControlLabel>

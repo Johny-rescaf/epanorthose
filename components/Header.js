@@ -1,38 +1,54 @@
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { Navbar, Nav, Dropdown, Icon, InputGroup, Input, Avatar, SelectPicker } from "rsuite";
+import {
+  Navbar,
+  Nav,
+  Dropdown,
+  Icon,
+  InputGroup,
+  Input,
+  Avatar,
+  SelectPicker,
+} from "rsuite";
 import { useRouter } from "next/router";
+import jwt from "jwt-decode";
 
 const CustomInput = ({ ...props }) => <Input {...props} />;
 
-
 let data = [
   {
-    "label": <>
-      <img
-        src="https://flagcdn.com/20x15/us.png"
-        srcset="https://flagcdn.com/40x30/us.png 2x,
+    label: (
+      <>
+        <img
+          src="https://flagcdn.com/20x15/us.png"
+          srcSet="https://flagcdn.com/40x30/us.png 2x,
         https://flagcdn.com/60x45/us.png 3x"
-        width="20"
-        height="15"
-        alt="En" />&nbsp;
-      English
-    </>,
-    "value": "us",
+          width="20"
+          height="15"
+          alt="En"
+        />
+        &nbsp; English
+      </>
+    ),
+    value: "us",
   },
   {
-    "label": <>
-      <img
-        src="https://flagcdn.com/20x15/fr.png"
-        srcset="https://flagcdn.com/40x30/fr.png 2x,
+    label: (
+      <>
+        <img
+          src="https://flagcdn.com/20x15/fr.png"
+          srcset="https://flagcdn.com/40x30/fr.png 2x,
         https://flagcdn.com/60x45/fr.png 3x"
-        width="20"
-        height="15"
-        alt="En" />&nbsp;
-      French
-    </>,
-    "value": "fr",
+          width="20"
+          height="15"
+          alt="En"
+        />
+        &nbsp; French
+      </>
+    ),
+    value: "fr",
   },
-]
+];
 
 const CustomInputGroup = ({ placeholder, ...props }) => (
   <InputGroup {...props}>
@@ -51,26 +67,37 @@ const CustomInputGroupWidthButton = ({ placeholder, ...props }) => (
     </InputGroup.Button>
   </InputGroup>
 );
-// boxShadow: '0px 4px 8px #aaa' 
+// boxShadow: '0px 4px 8px #aaa'
 function Header() {
+  let [isLogin, setIsLogin] = useState(false);
+  let [loginUser, setLoginUser] = useState({});
   const router = useRouter();
+
+  useEffect(async () => {
+    if (typeof window !== "undefined") {
+      let token = localStorage.getItem("jtoken");
+      if (token != null) {
+        setIsLogin(true);
+        const currentUser = jwt(token);
+        setLoginUser(currentUser);
+      }
+    }
+  }, []);
 
   let onSelect = () => {
     console.log("Here");
   };
 
-  function logOut(){
-    localStorage.removeItem('jtoken');
-    router.push('/login')
+  function logOut() {
+    localStorage.removeItem("jtoken");
+    router.push("/login");
   }
   return (
     <>
       <Navbar appearance="inverse" style={{}} className="header-nav">
         <Navbar.Header>
-          <Link href="/">
-            <a className="navbar-brand logo site-logo px-3">
-              Epanorthose
-            </a>
+          <Link href="/posts">
+            <a className="navbar-brand logo site-logo px-3">Epanorthose</a>
           </Link>
         </Navbar.Header>
         <div
@@ -87,7 +114,6 @@ function Header() {
         </div>
         <Navbar.Body>
           <Nav pullRight>
-
             <Nav.Item icon={<Icon icon="cog" />}>Apropos</Nav.Item>
 
             <Nav.Item eventKey="2">contact</Nav.Item>
@@ -98,51 +124,75 @@ function Header() {
               placeholder="Subtle"
               defaultValue="fr"
               placement="bottomEnd"
-              style={{ marginTop: '.7rem', marginRight: '.5rem', marginLeft: '.5rem' }}
-            />
-            {/* <Dropdown 
-              title="Francais">
-              <Dropdown.Item eventKey="4">
-              <img
-                src="https://flagcdn.com/20x15/fr.png"
-                srcset="https://flagcdn.com/40x30/fr.png 2x,
-                  https://flagcdn.com/60x45/fr.png 3x"
-                width="20"
-                height="15"
-                alt="Fr" />&nbsp;
-                Francais
-              </Dropdown.Item>
-              
-              <Dropdown.Item eventKey="5">
-                <img
-                  src="https://flagcdn.com/20x15/us.png"
-                  srcset="https://flagcdn.com/40x30/us.png 2x,
-                    https://flagcdn.com/60x45/us.png 3x"
-                  width="20"
-                  height="15"
-                  alt="En" />&nbsp;
-                English
-              </Dropdown.Item>
-            </Dropdown> */}
-
-            <Dropdown
-              title="Account"
-              placement="bottomEnd"
-              renderTitle={children => {
-                return <Avatar size="sm" style={{ marginTop: '.9rem', marginRight: '.9rem', marginLeft: '.9rem' }} circle>JK</Avatar>;
+              style={{
+                marginTop: ".7rem",
+                marginRight: ".5rem",
+                marginLeft: ".5rem",
               }}
-            >
-              <Link href="/account">
-                <Dropdown.Item>
-                  <><Icon icon="user" /> Account</>
+            />
+            {!isLogin && (
+              <Dropdown
+                title="Account"
+                placement="bottomEnd"
+                renderTitle={(children) => {
+                  return (
+                    <Icon
+                      icon="sign-in"
+                      size="2x "
+                      style={{
+                        marginTop: ".9rem",
+                        marginRight: ".9rem",
+                        marginLeft: ".9rem",
+                      }}
+                    />
+                  );
+                }}
+              >
+                <Link href="/login">
+                  <Dropdown.Item>
+                    <>Se connecter</>
+                  </Dropdown.Item>
+                </Link>
+                <Link href="/signup">
+                  <Dropdown.Item>
+                    <>Inscription</>
+                  </Dropdown.Item>
+                </Link>
+              </Dropdown>
+            )}
+            {isLogin && (
+              <Dropdown
+                title="Account"
+                placement="bottomEnd"
+                renderTitle={(children) => {
+                  return (
+                    <Avatar
+                      size="sm"
+                      style={{
+                        marginTop: ".9rem",
+                        marginRight: ".9rem",
+                        marginLeft: ".9rem",
+                      }}
+                      circle
+                    >
+                      {loginUser.firstname[0] + "" + loginUser.lastname[0]}
+                    </Avatar>
+                  );
+                }}
+              >
+                <Link href="/account">
+                  <Dropdown.Item>
+                    <>
+                      <Icon icon="user" /> Account
+                    </>
+                  </Dropdown.Item>
+                </Link>
+
+                <Dropdown.Item onSelect={logOut}>
+                  <Icon icon="sign-out" /> Logout
                 </Dropdown.Item>
-              </Link>
-
-              <Dropdown.Item onSelect={logOut}>
-                <Icon icon="sign-out" /> Logout
-              </Dropdown.Item>
-            </Dropdown>
-
+              </Dropdown>
+            )}
           </Nav>
         </Navbar.Body>
       </Navbar>
